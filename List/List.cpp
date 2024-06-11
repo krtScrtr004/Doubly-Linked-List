@@ -5,12 +5,12 @@ using namespace List;
 int main()
 {
 	LinkedList<int> list;
-	list.PushFront(1);
-	list.PushFront(2);
-	list.PushFront(4);
+	list.PushBack(1);
+	list.PushBack(2);
+	list.PushBack(4);
 
-	Iterator<int> itr = list.End();
-	list.Insert(itr + 11, 15);
+	/*Iterator<int> itr = list.End();
+	list.Insert(itr, 15);*/
 	cout << list;
 
 	return 0;

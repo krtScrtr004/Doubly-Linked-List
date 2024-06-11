@@ -53,7 +53,7 @@ Iterator<T>& Iterator<T>::operator++(int) {
 template <typename T>
 Iterator<T>& Iterator<T>::operator+(const size_t N) {
 	size_t count = 0;
-	while (count != N && this->Pointed != nullptr) {
+	while (count < N && this->Pointed != nullptr) {
 		++(*this);
 		++count;
 	}
@@ -90,7 +90,7 @@ Iterator<T>& Iterator<T>::operator--(int) {
 template <typename T>
 Iterator<T>& Iterator<T>::operator-(const size_t N) {
 	size_t count = 0;
-	while (count != N && this->Pointed != nullptr) {
+	while (count < N && this->Pointed != nullptr) {
 		--(*this);
 		++count;
 	}
