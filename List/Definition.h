@@ -32,5 +32,14 @@ void LinkedList<T>::Insert(const Iterator<T>& ITR, const T DATA) {
     ITR.Pointed->Prev = newNode;
 }
 
+template<typename T>
+void List::LinkedList<T>::Insert(const Iterator<T>& ITR, const size_t N, const T DATA) {
+    size_t count = 0;
+    while (count < N && ITR.Pointed != nullptr) {
+        Insert(ITR, DATA);
+        ++count;
+    }
+}
+
 #endif // !DEFINITION_H
 

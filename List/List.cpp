@@ -9,8 +9,8 @@ int main()
 	list.PushBack(2);
 	list.PushBack(4);
 
-	/*Iterator<int> itr = list.End();
-	list.Insert(itr, 15);*/
+	Iterator<int> itr = list.Begin();
+	list.Insert(itr, 5, 15);
 	cout << list;
 
 	return 0;

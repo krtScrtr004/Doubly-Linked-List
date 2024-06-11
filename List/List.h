@@ -106,6 +106,7 @@ namespace List {
 		void PushFront(const T);
 		void PushBack(const T);
 		void Insert(const Iterator<T>&, const T);
+		void Insert(const Iterator<T>&, const size_t, const T);
 
 		Iterator<T> Begin() {
 			Iterator<T> begin(*this);
