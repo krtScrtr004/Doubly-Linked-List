@@ -27,6 +27,11 @@ void LinkedList<T>::PushBack(const T DATA) {
 
 template<typename T>
 void LinkedList<T>::Insert(const Iterator<T>& ITR, const T DATA) {
+    if (ITR.Pointed == nullptr) {
+        cerr << "Cannot insert at a NULL iterator position" << endl;
+        return;
+    }
+
     if (ITR.Pointed == Head->Next)
         PushFront(DATA);
     else if (ITR.Pointed == Tail->Prev)

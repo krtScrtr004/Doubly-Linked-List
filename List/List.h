@@ -114,6 +114,7 @@ namespace List {
 
 		Iterator<T> End() {
 			Iterator<T> end(*this);
+			end.Pointed = Tail;
 			return end;
 		}
 	};

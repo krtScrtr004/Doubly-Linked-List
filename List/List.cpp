@@ -10,7 +10,8 @@ int main()
 	list.PushFront(4);
 
 	Iterator<int> itr = list.End();
-	list.Insert()
+	list.Insert(itr + 11, 15);
+	cout << list;
 
 	return 0;
 }
