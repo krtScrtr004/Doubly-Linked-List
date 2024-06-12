@@ -6,19 +6,19 @@
 using namespace List;
 
 template <typename T> 
-void LinkedList<T>::PushFront(const T DATA) {
-    Iterator<T> itr = Begin();
-    Insert(itr, DATA);
+void LinkedList<T>::push_front(const T DATA) {
+    Iterator<T> itr = begin();
+    insert(itr, DATA);
 }
 
 template <typename T>
-void LinkedList<T>::PushBack(const T DATA) {
-    Iterator<T> itr = End();
-    Insert(itr, DATA);
+void LinkedList<T>::push_back(const T DATA) {
+    Iterator<T> itr = end();
+    insert(itr, DATA);
 }
 
 template<typename T>
-void LinkedList<T>::Insert(const Iterator<T>& ITR, const T DATA) {
+void LinkedList<T>::insert(const Iterator<T>& ITR, const T DATA) {
     if (ITR.Pointed == nullptr) {
         cerr << "Cannot insert at a NULL iterator position" << endl;
         return;
@@ -30,13 +30,14 @@ void LinkedList<T>::Insert(const Iterator<T>& ITR, const T DATA) {
     newNode->Next = ITR.Pointed;
     ITR.Pointed->Prev->Next = newNode;
     ITR.Pointed->Prev = newNode;
+    ++Size;
 }
 
 template<typename T>
-void List::LinkedList<T>::Insert(const Iterator<T>& ITR, const size_t N, const T DATA) {
+void List::LinkedList<T>::insert(const Iterator<T>& ITR, const size_t N, const T DATA) {
     size_t count = 0;
     while (count < N && ITR.Pointed != nullptr) {
-        Insert(ITR, DATA);
+        insert(ITR, DATA);
         ++count;
     }
 }

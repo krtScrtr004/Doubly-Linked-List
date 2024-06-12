@@ -10,8 +10,11 @@ int main()
 	list.PushBack(4);
 
 	Iterator<int> itr = list.Begin();
-	list.Insert(itr, 5, 15);
-	cout << list;
+	cout << list << endl;
+
+	LinkedList<int> list2 = list;
+	cout << list2;
 
 	return 0;
 }
+
