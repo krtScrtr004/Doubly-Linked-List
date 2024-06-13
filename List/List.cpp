@@ -4,17 +4,14 @@ using namespace List;
 
 int main()
 {
-	LinkedList<int> list;
-	list.PushBack(1);
-	list.PushBack(2);
-	list.PushBack(4);
+	list<int> myList;
+	for (auto i = 0; i < 10; ++i)
+		myList.push_back(i);
+	cout << myList << endl;
 
-	Iterator<int> itr = list.Begin();
-	cout << list << endl;
-
-	LinkedList<int> list2 = list;
-	cout << list2;
-
+	myList.erase(myList.begin() + 4);
+	cout << myList << endl;
+	
 	return 0;
 }
 

@@ -13,139 +13,154 @@ using std::ostream;
 
 namespace List {
 	// FORWARD DECLARATION OF CLASSES
-	template <typename T> class LinkedList;
-	template <typename T> class Node;
-	template <typename T> class Iterator;
+	template <typename T> class list;
+	template <typename T> class node;
+	template <typename T> class iterator;
 
-	/*-----NODE CLASS-----*/
+	/*-----node CLASS-----*/
 	template <typename T>
-	class Node {
+	class node {
 		// FRIEND CLASSES AND OPERATORS
-		friend class LinkedList<T>;
-		friend ostream& operator<<(ostream& os, const LinkedList<T>&);
+		friend class list<T>;
+		friend ostream& operator<<(ostream& os, const list<T>&);
 
-		friend class Iterator<T>;
+		friend class iterator<T>;
 
 	private:
-		T Data;
-		Node<T> *Prev, *Next;
+		T data_;
+		node<T> *prev_, *next_;
 
-		Node() :															// DEFAULT CONSTRUCTOR
-			Data(), 
-			Prev(nullptr), 
-			Next(nullptr) {}					
-		Node(const Node<T>& OTHER) :										// COPY CONSTRUCTOR
-			Data(OTHER.Data), 
-			Prev(OTHER.Prev ? new Node<T>(*(OTHER.Prev)) : nullptr), 
-			Next(OTHER.Next ? new Node<T>(*(OTHER.Next)) : nullptr) {}
+		node() :															// DEFAULT CONSTRUCTOR
+			data_(), 
+			prev_(nullptr), 
+			next_(nullptr) {}					
+		node(const node<T>& OTHER) :										// COPY CONSTRUCTOR
+			data_(OTHER.Data), 
+			prev_(OTHER.Prev ? new node<T>(*(OTHER.prev_)) : nullptr), 
+			next_(OTHER.Next ? new node<T>(*(OTHER.next_)) : nullptr) {}
 	};
 
-	/*-----ITERATOR CLASS-----*/
+	/*-----iterator CLASS-----*/
 	template <typename T>
-	class Iterator {
+	class iterator {
 		// FRIEND CLASSES AND OPERATORS
-		friend class LinkedList<T>;
-		friend ostream& operator<<(ostream& os, const LinkedList<T>&);
+		friend class list<T>;
+		friend ostream& operator<<(ostream& os, const list<T>&);
 
 	private:
-		static T DefaultValue;				// STATIC MEMBER TO CALL 'T' TYPE DEFAULT CONSTRUCTOR
-		Node<T> *Pointed, *Head, *Tail;
+		static T defaultValue;							// STATIC MEMBER TO CALL 'T' TYPE DEFAULT CONSTRUCTOR
+		node<T> *pointed_, *head_, *tail_;
 
 	public:
-		Iterator() :									// DEFAULT CONSTRUCTOR
-			Pointed(nullptr),					
-			Head(nullptr), 
-			Tail(nullptr) {}				
-		Iterator(const Iterator<T>& OTHER) :			// COPY CONSTRUCTOR
-			Pointed(OTHER.Pointed),
-			Head(OTHER.Head),
-			Tail(OTHER.Tail) {}
-		Iterator(const LinkedList<T>& LIST) :			// CONSTRUCTOR WITH LinkedList CLASS ARGS
-			Pointed(LIST.Head->Next),
-			Head(LIST.Head),
-			Tail(LIST.Tail) {}									
+		iterator() :									// DEFAULT CONSTRUCTOR
+			pointed_(nullptr),					
+			head_(nullptr), 
+			tail_(nullptr) {}				
+		iterator(const iterator<T>& OTHER) :			// COPY CONSTRUCTOR
+			pointed_(OTHER.pointed_),
+			head_(OTHER.head_),
+			tail_(OTHER.tail_) {}
+		iterator(const list<T>& LIST) :					// CONSTRUCTOR WITH list CLASS ARGS
+			pointed_(LIST.head_->next_),
+			head_(LIST.head_),
+			tail_(LIST.tail_) {}
 
 		// OVERLAODED OPERATORS
-		Iterator<T>& operator=(const Iterator<T>& RHS);
-		bool operator==(const Iterator<T>& RHS) const;
-		bool operator!=(const Iterator<T>& RHS) const;
-		Iterator<T>& operator++();
-		Iterator<T>& operator++(int);
-		Iterator<T>& operator+(const size_t);
-		Iterator<T>& operator+=(const size_t);
-		Iterator<T>& operator--();
-		Iterator<T>& operator--(int);
-		Iterator<T>& operator-(const size_t);
-		Iterator<T>& operator-=(const size_t);
+		iterator<T>& operator=(const iterator<T>& RHS);
+		bool operator==(const iterator<T>& RHS) const;
+		bool operator!=(const iterator<T>& RHS) const;
+		iterator<T>& operator++();
+		iterator<T>& operator++(int);
+		iterator<T>& operator+(const size_t);
+		iterator<T>& operator+=(const size_t);
+		iterator<T>& operator--();
+		iterator<T>& operator--(int);
+		iterator<T>& operator-(const size_t);
+		iterator<T>& operator-=(const size_t);
 		T& operator*() const;
 
-		Iterator<T> begin() { 
+		iterator<T> begin() { 
 			return *this; 
 		}
-		Iterator<T> end() {
-			Pointed = Tail;
+		iterator<T> end() {
+			pointed_ = tail_->prev_;
 			return *this;
 		}
 	};
 
-	/*-----LINKEDLIST CLASS-----*/
+	/*-----list CLASS-----*/
 	template <typename T>
-	class LinkedList {
+	class list {
 		// FRIEND CLASSES AND OPERATORS
-		friend class Iterator<T>;
-		friend ostream& operator<<(ostream&, const LinkedList<T>&) {
-			Iterator<T> itr(RHS);
-			while (itr.Pointed != nullptr) {
-				os << itr.Pointed->Data << ' ';
-				++itr;
+		friend class iterator<T>;
+		friend ostream& operator<<(ostream& os, const list<T>& RHS) {
+			iterator<T> itr(RHS);
+			if (itr.pointed_ == RHS.head_ || itr.pointed_ == RHS.tail_)
+				os << ' ';
+			else {
+				while (itr.pointed_ != nullptr) {
+					os << itr.pointed_->data_ << ' ';
+					++itr;
+				}
 			}
+
 			return os;
 		}
 
 	private:
-		Node<T> *Head, *Tail;
-		size_t Size;
+		node<T> *head_, * tail_;
+		size_t size_;
 
 	public:
-		LinkedList() :													// DEFAULT CONSTRUCTOR
-			Size(0), 
-			Head(new Node<T>), 
-			Tail(new Node<T>) 
+		list() :													// DEFAULT CONSTRUCTOR
+			size_(0), 
+			head_(new node<T>), 
+			tail_(new node<T>) 
 		{			
-			Head->Next = Tail;
-			Tail->Prev = Head;
+			head_->next_ = tail_;
+			tail_->prev_ = head_;
 		}
-		LinkedList(const LinkedList<T>& OTHER) :						// DEFAULT CONSTRUCTOR
-			Size(OTHER.Size), 
-			Head(new Node<T>), 
-			Tail(new Node<T>) 
+		list(const list<T>& OTHER) :								// COPY CONSTRUCTOR
+			size_(OTHER.size_), 
+			head_(new node<T>), 
+			tail_(new node<T>)
 		{
-			Head->Next = Tail;
-			Tail->Prev = Head;
+			head_->next_ = tail_;
+			tail_->prev_ = head_;
 
-			Iterator<T> itr = OTHER.Begin();
+			iterator<T> itr = OTHER.begin();
 			size_t counter = 0;
-			while (counter < Size && itr.Pointed != nullptr) {
-				PushBack(*itr);
+			while (counter < size_ && itr.pointed_ != nullptr) {
+				push_back(*itr);
 				++itr;
 				++counter;
 			}
 		}
+		~list() {
+			clear();
+			delete head_;
+			delete tail_;
+		}
 
-		// OPERATIONS FOR LinkedList CLASS
+		// OPERATIONS FOR list CLASS
 		void push_front(const T);
 		void push_back(const T);
-		void insert(const Iterator<T>&, const T);
-		void insert(const Iterator<T>&, const size_t, const T);
+		void insert(const iterator<T>&, const T);
+		void insert(const iterator<T>&, const size_t, const T);
 
-		constexpr size_t size() const { return Size; }
+		void erase(const iterator<T>&);
+		void clear();
 
-		Iterator<T> begin() const { return Iterator<T>(*this).begin(); }
-		Iterator<T> end() const { return Iterator<T>(*this).end(); }
+		constexpr size_t size() const { return size_; }
+		constexpr T front() const { return *(iterator<T>(*this).begin()); }
+		constexpr T back() const { return *(iterator<T>(*this).end()); }
+
+		iterator<T> begin() const { return iterator<T>(*this).begin(); }
+		iterator<T> end() const { return iterator<T>(*this).end(); }
 	};
 
-#include "Iterator.h"		// DEFINITIONS FOR Iterator<T> CLASS
-#include "Definition.h"		// DEFINITIONS FOR LinkedList<T> CLASS
+#include "iterator.h"		// DEFINITIONS FOR iterator<T> CLASS
+#include "Definition.h"		// DEFINITIONS FOR list<T> CLASS
 }
 
 #endif // !LIST_H
