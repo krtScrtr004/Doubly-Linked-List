@@ -110,12 +110,14 @@ namespace List {
 	private:
 		node<T> *head_, * tail_;
 		size_t size_;
+		bool sortedFlag;
 
 	public:
 		list() :													// DEFAULT CONSTRUCTOR
-			size_(0), 
-			head_(new node<T>), 
-			tail_(new node<T>) 
+			size_(0),
+			head_(new node<T>),
+			tail_(new node<T>),
+			sortedFlag(false)
 		{			
 			head_->next_ = tail_;
 			tail_->prev_ = head_;
@@ -123,7 +125,8 @@ namespace List {
 		list(const list<T>& OTHER) :								// COPY CONSTRUCTOR
 			size_(OTHER.size_), 
 			head_(new node<T>), 
-			tail_(new node<T>)
+			tail_(new node<T>),
+			sortedFlag(false)
 		{
 			head_->next_ = tail_;
 			tail_->prev_ = head_;
@@ -136,6 +139,36 @@ namespace List {
 				++counter;
 			}
 		}
+		list(const size_t SIZE) :									// CONSTRUCTOR WITH SIZE ARGS
+			size_(0),
+			head_(new node<T>),
+			tail_(new node<T>),
+			sortedFlag(false)
+		{									
+			head_->next_ = tail_;
+			tail_->prev_ = head_;
+
+			size_t count = 0;
+			while (count != SIZE) {
+				push_back(T());
+				++count;
+			}
+		}
+		list(const size_t SIZE, const T DATA) :						// CONSTRUCTOR WITH SIZE AND DATA ARGS
+			size_(0),
+			head_(new node<T>),
+			tail_(new node<T>),
+			sortedFlag(false)
+		{
+			head_->next_ = tail_;
+			tail_->prev_ = head_;
+
+			size_t count = 0;
+			while (count != SIZE) {
+				push_back(DATA);
+				++count;
+			}
+		}
 		~list() {
 			clear();
 			delete head_;
@@ -143,6 +176,8 @@ namespace List {
 		}
 
 		// OPERATIONS FOR list CLASS
+
+		// NODE INSERTION / ASSIGNMENT OPERATIONS
 		void push_front(const T);
 		void push_back(const T);
 		void insert(const iterator<T>&, const T);
@@ -150,14 +185,15 @@ namespace List {
 		void assign(const iterator<T>&, const T);
 		void assign(const iterator<T>&, const iterator<T>&, const T);
 
+		// NODE DELETION OPERATIONS
 		void erase(const iterator<T>&);
 		void erase(iterator<T>, iterator<T>);
 		void clear();
 
+		// UTILITY / HELPER FUNCTIONS
 		constexpr size_t size() const { return size_; }
 		constexpr T front() const { return *(iterator<T>(*this).begin()); }
 		constexpr T back() const { return *(iterator<T>(*this).end()); }
-
 		iterator<T> begin() const { return iterator<T>(*this).begin(); }
 		iterator<T> end() const { return iterator<T>(*this).end(); }
 	};
