@@ -147,8 +147,11 @@ namespace List {
 		void push_back(const T);
 		void insert(const iterator<T>&, const T);
 		void insert(const iterator<T>&, const size_t, const T);
+		void assign(const iterator<T>&, const T);
+		void assign(const iterator<T>&, const iterator<T>&, const T);
 
 		void erase(const iterator<T>&);
+		void erase(iterator<T>, iterator<T>);
 		void clear();
 
 		constexpr size_t size() const { return size_; }

@@ -9,7 +9,7 @@ int main()
 		myList.push_back(i);
 	cout << myList << endl;
 
-	myList.erase(myList.begin() + 4);
+	myList.assign(myList.begin(), myList.end(), 99);
 	cout << myList << endl;
 	
 	return 0;
