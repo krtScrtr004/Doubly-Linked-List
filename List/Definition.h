@@ -98,18 +98,48 @@ void list<T>::clear() {
 template <typename T>
 void list<T>::splice(const iterator<T>& ITR, list<T>& other) {
     if (ITR.pointed_ == head_ || ITR.pointed_ == tail_) {
+        cerr << "Cannot splice data to an invalid position" << endl;
+        return;
+    }
+
+    ITR.pointed_->prev_->next_ = other.head_->next_;
+    ITR.pointed_->prev_->next_->prev_ = ITR.pointed_->prev_;
+    ITR.pointed_->prev_ = other.tail_->prev_;
+    ITR.pointed_->prev_->next_ = ITR.pointed_;
+
+    other.head_->next_ = other.tail_;
+    other.tail_->prev_ = other.head_;
+    other.size_ = 0;
+}
+
+template <typename T>
+void list<T>::splice(const iterator<T>& POS, list<T>& other, const iterator<T>& BEGIN) {
+    if (POS.pointed_ == head_ || POS.pointed_ == tail_) {
+        cerr << "Cannot splice data to an invalid position" << endl;
+        return;
+    }
+
+    if (BEGIN.pointed_ == head_ || BEGIN.pointed_ == tail_) {
         cerr << "Cannot splice data from an invalid position" << endl;
         return;
     }
 
-    other.head_->next_->prev_ = tail_->prev_;
-    other.head_->next_->prev_->next_ = other.head_->next_;
-    other.head_->next_ = ITR.pointed_;
-    ITR.pointed_->prev_ = other.head_;
+    node<T>* temp = BEGIN.pointed_->prev_;
 
-    head_->next_ = tail_;
-    tail_->prev_ = head_;
-    size_ = 0;
+    other.size_ = 0;
+    iterator<T> itr(other);
+    while (itr.pointed_ != BEGIN.pointed_) {
+        ++other.size_;
+        ++itr;
+    }
+
+    POS.pointed_->prev_->next_ = BEGIN.pointed_;
+    POS.pointed_->prev_->next_->prev_ = POS.pointed_->prev_;
+    POS.pointed_->prev_ = other.tail_->prev_;
+    POS.pointed_->prev_->next_ = POS.pointed_;
+
+    temp->next_ = other.tail_;
+    other.tail_->prev_ = temp;
 }
 
 #endif // !DEFINITION_H

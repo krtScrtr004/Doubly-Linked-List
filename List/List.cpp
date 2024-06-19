@@ -13,10 +13,13 @@ int main()
 	for (auto i = 10; i < 21; ++i)
 		otherList.push_front(i);
 
-	myList.splice(myList.begin(), otherList);
 	cout << otherList << endl;
 
+	myList.splice(myList.end(), otherList, otherList.begin() + 2);
 	cout << myList << endl;
+	myList.print();
+
+	cout << otherList << endl;
 
 	return 0;
 }

@@ -184,6 +184,7 @@ namespace List {
 		void clear();
 
 		void splice(const iterator<T>&, list<T>&);
+		void splice(const iterator<T>&, list<T>&, const iterator<T>&);
 
 		// UTILITY / HELPER FUNCTIONS
 		constexpr size_t size() const { return size_; }
@@ -192,6 +193,14 @@ namespace List {
 		iterator<T> begin() const { return iterator<T>(*this).begin(); }
 		iterator<T> end() const { return iterator<T>(*this).end(); }
 
+		void print() const {
+			node<T>* temp = tail_->prev_;
+			while (temp != head_) {
+				cout << temp->data_ << ' ';
+				temp = temp->prev_;
+			}
+			cout << endl;
+		}
 	};
 
 #include "iterator.h"		// DEFINITIONS FOR iterator<T> CLASS
