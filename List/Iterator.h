@@ -32,7 +32,7 @@ bool iterator<T>::operator!=(const iterator<T>& RHS) const {
 template <typename T>
 iterator<T>& iterator<T>::operator++() {
 	if ((pointed_ == tail_) || (pointed_->next_ == tail_))
-		pointed_ = nullptr;
+		pointed_ = tail_;
 	else
 		pointed_ = pointed_->next_;
 
@@ -43,7 +43,7 @@ template <typename T>
 iterator<T>& iterator<T>::operator++(int) {
 	iterator<T>* itr(this);
 	if ((pointed_ == tail_) || (pointed_->next_ == tail_))
-		pointed_ = nullptr;
+		pointed_ = tail_;
 	else 
 		pointed_ = pointed_->next_;
 
@@ -53,7 +53,7 @@ iterator<T>& iterator<T>::operator++(int) {
 template <typename T>
 iterator<T>& iterator<T>::operator+(const size_t N) {
 	size_t count = 0;
-	while (count < N && pointed_ != nullptr) {
+	while (count < N && pointed_ != tail_) {
 		++(*this);
 		++count;
 	}
@@ -69,7 +69,7 @@ iterator<T>& iterator<T>::operator+=(const size_t N) {
 template <typename T>
 iterator<T>& iterator<T>::operator--() {
 	if ((pointed_ == head_) || (pointed_->prev_ == head_))
-		pointed_ = nullptr;
+		pointed_ = head_;
 	else
 		pointed_ = pointed_->prev_;
 
@@ -80,7 +80,7 @@ template <typename T>
 iterator<T>& iterator<T>::operator--(int) {
 	iterator<T>* itr(this);
 	if ((pointed_ == head_) || (pointed_->prev_ == head_))
-		pointed_ = nullptr;
+		pointed_ = head_;
 	else
 		pointed_ = pointed_->prev_;
 
@@ -90,7 +90,7 @@ iterator<T>& iterator<T>::operator--(int) {
 template <typename T>
 iterator<T>& iterator<T>::operator-(const size_t N) {
 	size_t count = 0;
-	while (count < N && pointed_ != nullptr) {
+	while (count < N && pointed_ != head_) {
 		--(*this);
 		++count;
 	}
