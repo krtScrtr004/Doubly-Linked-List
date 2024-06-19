@@ -8,18 +8,27 @@ int main()
 	for (auto i = 0; i < 6; ++i)
 		myList.push_front(i);
 	cout << myList << endl;
+	cout << myList.size() << endl;
+
+	cout << endl;
 
 	list<int> otherList;
 	for (auto i = 10; i < 21; ++i)
 		otherList.push_front(i);
 
 	cout << otherList << endl;
+	cout << otherList.size() << endl;
+	
+	cout << endl;
 
-	myList.splice(myList.end(), otherList, otherList.begin() + 2);
+	myList.splice(myList.end(), otherList);
 	cout << myList << endl;
-	myList.print();
+	cout << myList.size() << endl;
+
+	cout << endl;
 
 	cout << otherList << endl;
+	cout << otherList.size() << endl;
 
 	return 0;
 }

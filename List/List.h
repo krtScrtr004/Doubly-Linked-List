@@ -185,6 +185,7 @@ namespace List {
 
 		void splice(const iterator<T>&, list<T>&);
 		void splice(const iterator<T>&, list<T>&, const iterator<T>&);
+		void splice(const iterator<T>&, list<T>&, const iterator<T>&, const iterator<T>&);
 
 		// UTILITY / HELPER FUNCTIONS
 		constexpr size_t size() const { return size_; }
