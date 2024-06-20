@@ -5,6 +5,17 @@
 #include "List.h"
 using namespace List;
 
+template <typename T>
+node<T>* list<T>::split(node<T>* head) {
+    node<T>* slow = head_, * fast = head_;
+    while (fast != nullptr && fast->next_ != nullptr && fast != tail_ && fast->next_ != tail_) {
+        slow = slow->next_;
+        fast = fast->next_->next_;
+    }
+
+    return slow;
+}
+
 /*-----PUBLIC-----*/
 template <typename T>
 void list<T>::push_front(const T DATA) {
@@ -191,5 +202,26 @@ void list<T>::splice(const iterator<T>& POS, list<T>& other, const iterator<T>& 
     size_ += addedSize;
 }
 
+template <typename T>
+void list<T>::reverse() {
+    node<T>* current = head_;
+    node<T>* temp = nullptr;
+
+    while (current != nullptr) {
+        temp = current->prev_;
+        current->prev_ = current->next_;
+        current->next_ = temp;
+
+        current = current->prev_;
+    }
+
+    if (temp != nullptr) {
+        temp = temp->prev_;
+        tail_ = head_;
+        head_ = temp;
+    }
+}
+
 #endif // !DEFINITION_H
 
+    

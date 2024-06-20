@@ -51,6 +51,8 @@ namespace List {
 		static T defaultValue;							// STATIC MEMBER TO CALL 'T' TYPE DEFAULT CONSTRUCTOR
 		node<T> *pointed_, *head_, *tail_;
 
+	private:
+
 	public:
 		iterator() :									// DEFAULT CONSTRUCTOR
 			pointed_(nullptr),					
@@ -108,8 +110,12 @@ namespace List {
 		}
 
 	private:
-		node<T> *head_, * tail_;
+		node<T>* head_, * tail_;
 		size_t size_;
+		iterator<T>* min_, * max_;
+
+	private:
+		node<T>* split(node<T>*);
 
 	public:
 		list() :													// DEFAULT CONSTRUCTOR
@@ -186,6 +192,8 @@ namespace List {
 		void splice(const iterator<T>&, list<T>&);
 		void splice(const iterator<T>&, list<T>&, const iterator<T>&);
 		void splice(const iterator<T>&, list<T>&, const iterator<T>&, const iterator<T>&);
+
+		void reverse();
 
 		// UTILITY / HELPER FUNCTIONS
 		constexpr size_t size() const { return size_; }

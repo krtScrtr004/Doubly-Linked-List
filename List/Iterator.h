@@ -8,6 +8,8 @@ using namespace List;
 template <typename T>
 T iterator<T>::defaultValue = T();
 
+
+
 template <typename T>
 iterator<T>& iterator<T>::operator=(const iterator<T>& RHS) {
 	if (*this != RHS) {
