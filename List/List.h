@@ -115,7 +115,9 @@ namespace List {
 		iterator<T>* min_, * max_;
 
 	private:
+		node<T>* sort(node<T>*);
 		node<T>* split(node<T>*);
+		node<T>* merge(node<T>*, node<T>*);
 
 	public:
 		list() :													// DEFAULT CONSTRUCTOR
@@ -183,24 +185,28 @@ namespace List {
 		void insert(const iterator<T>&, const size_t, const T);
 		void assign(const iterator<T>&, const T);
 		void assign(const iterator<T>&, const iterator<T>&, const T);
+		void merge( list<T>&);
 
-		// NODE DELETION OPERATIONS
+		// NODE DELETION / REMOVAL OPERATIONS
+		void pop_front();
+		void pop_back();
+		void splice(const iterator<T>&, list<T>&);
+		void splice(const iterator<T>&, list<T>&, const iterator<T>&);
+		void splice(const iterator<T>&, list<T>&, const iterator<T>&, const iterator<T>&);
 		void erase(const iterator<T>&);
 		void erase(iterator<T>, iterator<T>);
 		void clear();
 
-		void splice(const iterator<T>&, list<T>&);
-		void splice(const iterator<T>&, list<T>&, const iterator<T>&);
-		void splice(const iterator<T>&, list<T>&, const iterator<T>&, const iterator<T>&);
-
+		// NODE ARRAGEMENT OPERATIONS
 		void reverse();
+		void sort();
 
 		// UTILITY / HELPER FUNCTIONS
-		constexpr size_t size() const { return size_; }
-		constexpr T front() const { return *(iterator<T>(*this).begin()); }
-		constexpr T back() const { return *(iterator<T>(*this).end()); }
-		iterator<T> begin() const { return iterator<T>(*this).begin(); }
-		iterator<T> end() const { return iterator<T>(*this).end(); }
+		inline constexpr size_t size() const { return size_; }
+		inline constexpr T front() const { return *(iterator<T>(*this).begin()); }
+		inline constexpr T back() const { return *(iterator<T>(*this).end()); }
+		inline iterator<T> begin() const { return iterator<T>(*this).begin(); }
+		inline iterator<T> end() const { return iterator<T>(*this).end(); }
 
 		void print() const {
 			node<T>* temp = tail_->prev_;
