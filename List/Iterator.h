@@ -9,7 +9,6 @@ template <typename T>
 T iterator<T>::defaultValue = T();
 
 
-
 template <typename T>
 iterator<T>& iterator<T>::operator=(const iterator<T>& RHS) {
 	if (*this != RHS) {
@@ -19,16 +18,6 @@ iterator<T>& iterator<T>::operator=(const iterator<T>& RHS) {
 	}
 		
 	return *this;
-}
-
-template <typename T>
-bool iterator<T>::operator==(const iterator<T>& RHS) const {
-	return (pointed_ == RHS.pointed_);
-}
-
-template <typename T>
-bool iterator<T>::operator!=(const iterator<T>& RHS) const {
-	return (pointed_ != RHS.pointed_);
 }
 
 template <typename T>
@@ -64,11 +53,6 @@ iterator<T>& iterator<T>::operator+(const size_t N) {
 }
 
 template <typename T>
-iterator<T>& iterator<T>::operator+=(const size_t N) {
-	return (*this) + N;
-}
-
-template <typename T>
 iterator<T>& iterator<T>::operator--() {
 	if ((pointed_ == head_) || (pointed_->prev_ == head_))
 		pointed_ = head_;
@@ -99,15 +83,4 @@ iterator<T>& iterator<T>::operator-(const size_t N) {
 
 	return *this;
 }
-
-template <typename T>
-iterator<T>& iterator<T>::operator-=(const size_t N) {
-	return (*this) - N;
-}
-
-template <typename T>
-T& iterator<T>::operator*() const {
-	return (pointed_ ? pointed_->data_ : defaultValue);
-}
-
 #endif // !iterator_H

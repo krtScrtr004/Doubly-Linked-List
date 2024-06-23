@@ -82,21 +82,21 @@ void list<T>::push_back(const T DATA) {
 
 // SINLGE INSERT FUNCTION
 template <typename T>
-void list<T>::insert(const iterator<T>& ITR, const T DATA) {
+void list<T>::insert(iterator<T>& ITR, const T DATA) {
     node<T>* newNode = new node<T>();
     newNode->data_ = DATA;
-    newNode->prev_ = ITR.pointed_->prev_;
-    newNode->next_ = ITR.pointed_ ;
-    ITR.pointed_->prev_->next_ = newNode;
-    ITR.pointed_->prev_ = newNode;
+    newNode->prev_ = ITR->prev_;
+    newNode->next_ = ITR;
+    ITR->prev_->next_ = newNode;
+    ITR->prev_ = newNode;
     ++size_;
 }
 
 // MULTIPLE INSERT FUNCTION
 template <typename T>
-void list<T>::insert(const iterator<T>& ITR, const size_t N, const T DATA) {
+void list<T>::insert(iterator<T>& ITR, const size_t N, const T DATA) {
     size_t count = 0;
-    while (count < N && (ITR.pointed_ != head_ || ITR.pointed_ == tail_)) {
+    while (count < N && (ITR != head_ || ITR == tail_)) {
         insert(ITR, DATA);
         ++count;
     }
@@ -104,25 +104,26 @@ void list<T>::insert(const iterator<T>& ITR, const size_t N, const T DATA) {
 
 // SINGLE ASSIGN FUNCTION
 template <typename T>
-void list<T>::assign(const iterator<T>& ITR, const T DATA) {
-    if (ITR.pointed_ == head_ || ITR.pointed_ == tail_) {
+void list<T>::assign(iterator<T>& ITR, const T DATA) {
+    if (ITR == head_ || ITR == tail_) {
         cerr << "Cannot assign new value at invalid position" << endl;
         return;
     }
 
-    ITR.pointed_->data_ = DATA;
+    ITR->data_ = DATA;
 }
 
 // RANGE ASSIGN FUNCTION
 template <typename T>
-void list<T>::assign(const iterator<T>& BEGIN, const iterator<T>& END, const T DATA) {
+void list<T>::assign(iterator<T>& BEGIN, iterator<T>& END, const T DATA) {
     iterator<T> temp = BEGIN;
-    while (temp.pointed_ != END.pointed_->next_ && temp.pointed_ != tail_) {
-        temp.pointed_->data_ = DATA;
+    while (temp != END->next_ && temp != tail_) {
+        temp->data_ = DATA;
         ++temp;
     }
 }
 
+// MERGE LISTS FUNCTION
 template<typename T>
 void List::list<T>::merge(list<T>& other) {
     tail_->prev_->next_ = other.head_->next_;
@@ -157,18 +158,18 @@ void list<T>::pop_back() {
 
 // WHOLE LIST SPLICE FUNCTION 
 template <typename T>
-void list<T>::splice(const iterator<T>& ITR, list<T>& other) {
-    if (ITR.pointed_ == head_ || ITR.pointed_ == tail_) {
+void list<T>::splice(iterator<T>& ITR, list<T>& other) {
+    if (ITR == head_ || ITR == tail_) {
         cerr << "Cannot splice data to an invalid position" << endl;
         return;
     }
 
     size_ += other.size_;
 
-    ITR.pointed_->prev_->next_ = other.head_->next_;
-    ITR.pointed_->prev_->next_->prev_ = ITR.pointed_->prev_;
-    ITR.pointed_->prev_ = other.tail_->prev_;
-    ITR.pointed_->prev_->next_ = ITR.pointed_;
+    ITR->prev_->next_ = other.head_->next_;
+    ITR->prev_->next_->prev_ = ITR->prev_;
+    ITR->prev_ = other.tail_->prev_;
+    ITR->prev_->next_ = ITR;
 
     other.head_->next_ = other.tail_;
     other.tail_->prev_ = other.head_;
@@ -177,31 +178,31 @@ void list<T>::splice(const iterator<T>& ITR, list<T>& other) {
 
 // SINGLE ENDED SPLICE FUNCTION
 template <typename T>
-void list<T>::splice(const iterator<T>& POS, list<T>& other, const iterator<T>& BEGIN) {
-    if (POS.pointed_ == head_ || POS.pointed_ == tail_) {
+void list<T>::splice(iterator<T>& POS, list<T>& other, iterator<T>& BEGIN) {
+    if (POS == head_ || POS == tail_) {
         cerr << "Cannot splice data to an invalid position" << endl;
         return;
     }
 
-    if (BEGIN.pointed_ == head_ || BEGIN.pointed_ == tail_) {
+    if (BEGIN == head_ || BEGIN == tail_) {
         cerr << "Cannot splice data from an invalid position" << endl;
         return;
     }
 
-    node<T>* temp = BEGIN.pointed_->prev_;
+    node<T>* temp = BEGIN->prev_;
     size_t addedSize = other.size_;
 
     // UPDATE this' & other's size_
-    for (node<T>* temp = BEGIN.pointed_; temp != other.tail_; ) {
+    for (node<T>* temp = BEGIN; temp != other.tail_; ) {
         --other.size_;
         ++size_;
         temp = temp->next_;
     }
 
-    POS.pointed_->prev_->next_ = BEGIN.pointed_;
-    POS.pointed_->prev_->next_->prev_ = POS.pointed_->prev_;
-    POS.pointed_->prev_ = other.tail_->prev_;
-    POS.pointed_->prev_->next_ = POS.pointed_;
+    POS->prev_->next_ = BEGIN;
+    POS->prev_->next_->prev_ = POS->prev_;
+    POS->prev_ = other.tail_->prev_;
+    POS->prev_->next_ = POS;
 
     temp->next_ = other.tail_;
     other.tail_->prev_ = temp;
@@ -209,32 +210,32 @@ void list<T>::splice(const iterator<T>& POS, list<T>& other, const iterator<T>& 
 
 // DOUBLE ENDED RANGE SPLICE FUNCTION
 template <typename T>
-void list<T>::splice(const iterator<T>& POS, list<T>& other, const iterator<T>& BEGIN, const iterator<T>& END) {
-    if (POS.pointed_ == head_ || POS.pointed_ == tail_) {
+void list<T>::splice(iterator<T>& POS, list<T>& other, iterator<T>& BEGIN, iterator<T>& END) {
+    if (POS == head_ || POS == tail_) {
         cerr << "Cannot splice data to an invalid position" << endl;
         return;
     }
 
-    if ((BEGIN.pointed_ == head_ || BEGIN.pointed_ == tail_) ||
-        (END.pointed_ == head_ || END.pointed_ == tail_)) {
+    if ((BEGIN == head_ || BEGIN == tail_) ||
+        (END == head_ || END == tail_)) {
         cerr << "Cannot splice data from an invalid position" << endl;
         return;
     }
 
-    node<T>* tempBack = BEGIN.pointed_->prev_,
-           * tempNext = END.pointed_->next_;
+    node<T>* tempBack = BEGIN->prev_,
+           * tempNext = END->next_;
     
     // UPDATE this' & other's size_
-    for (node<T>* temp = BEGIN.pointed_; temp != tempNext; ) {
+    for (node<T>* temp = BEGIN; temp != tempNext; ) {
         --other.size_;
         ++size_;
         temp = temp->next_;
     }
 
-    POS.pointed_->prev_->next_ = BEGIN.pointed_;
-    POS.pointed_->prev_->next_->prev_ = POS.pointed_->prev_;
-    POS.pointed_->prev_ = END.pointed_;
-    END.pointed_->next_ = POS.pointed_;
+    POS->prev_->next_ = BEGIN;
+    POS->prev_->next_->prev_ = POS->prev_;
+    POS->prev_ = END;
+    END->next_ = POS;
 
 
     // UPDATE BORDERED NODES FROM other
@@ -244,15 +245,15 @@ void list<T>::splice(const iterator<T>& POS, list<T>& other, const iterator<T>& 
 
 // SINGLE ERASE FUNCTION
 template <typename T>
-void list<T>::erase(const iterator<T>& ITR) {
-    if (ITR.pointed_ == head_ || ITR.pointed_ == tail_) {
+void list<T>::erase(iterator<T>& ITR) {
+    if (ITR == head_ || ITR == tail_) {
         cerr << "Cannot erase at invalid position" << endl;
         return;
     }
 
-    ITR.pointed_->prev_->next_ = ITR.pointed_->next_;
-    ITR.pointed_->next_->prev_ = ITR.pointed_->prev_;
-    delete ITR.pointed_;
+    ITR->prev_->next_ = ITR->next_;
+    ITR->next_->prev_ = ITR->prev_;
+    delete ITR;
     --size_;
 }
 
@@ -260,7 +261,7 @@ void list<T>::erase(const iterator<T>& ITR) {
 template <typename T>
 void list<T>::erase(iterator<T> BEGIN, iterator<T> END) {
     ++END;       
-    while (BEGIN.pointed_ != END.pointed_ && BEGIN.pointed_ != tail_) {
+    while (BEGIN != END && BEGIN != tail_) {
         iterator<T> temp = BEGIN;
         ++BEGIN;
         erase(temp);
@@ -271,8 +272,8 @@ void list<T>::erase(iterator<T> BEGIN, iterator<T> END) {
 template <typename T>
 void list<T>::clear() {
     iterator<T> itr = begin();
-    while (size_ != 0 && itr.pointed_ != tail_) {
-        node<T>* temp = itr.pointed_;
+    while (size_ != 0 && itr != tail_) {
+        node<T>* temp = itr;
         ++itr;
         delete temp;
         --size_;

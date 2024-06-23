@@ -68,22 +68,21 @@ namespace List {
 			tail_(LIST.tail_) {}
 
 		// OVERLAODED OPERATORS
-		iterator<T>& operator=(const iterator<T>& RHS);
-		bool operator==(const iterator<T>& RHS) const;
-		bool operator!=(const iterator<T>& RHS) const;
+		iterator<T>& operator=(const iterator<T>&);
+		bool operator==(const iterator<T>& RHS) const { return (pointed_ == RHS.pointed_); }
+		bool operator!=(const iterator<T>& RHS) const { return (pointed_ != RHS.pointed_); }
 		iterator<T>& operator++();
 		iterator<T>& operator++(int);
 		iterator<T>& operator+(const size_t);
-		iterator<T>& operator+=(const size_t);
+		iterator<T>& operator+=(const size_t N) { return (*this) + N; }
 		iterator<T>& operator--();
 		iterator<T>& operator--(int);
 		iterator<T>& operator-(const size_t);
-		iterator<T>& operator-=(const size_t);
-		T& operator*() const;
-
-		iterator<T> begin() { 
-			return *this; 
-		}
+		iterator<T>& operator-=(const size_t N) { return (*this) - N; }
+		node<T>* operator->() { return this->pointed_; }
+		T& operator*() const { return (pointed_ ? pointed_->data_ : defaultValue); }
+		operator node<T>*() const { return this->pointed_; }
+		iterator<T> begin() { return *this; }
 		iterator<T> end() {
 			pointed_ = tail_->prev_;
 			return *this;
@@ -112,7 +111,6 @@ namespace List {
 	private:
 		node<T>* head_, * tail_;
 		size_t size_;
-		iterator<T>* min_, * max_;
 
 	private:
 		node<T>* sort(node<T>*);
@@ -176,24 +174,33 @@ namespace List {
 			delete tail_;
 		}
 
-		// OPERATIONS FOR list CLASS
+		// OVERLOADED OPERATORS FOR list CLASS
+		list<T>& operator=(const list<T>&);
+		bool operator==(const list<T>&) const;
+		bool operator!=(const list<T>&) const;
+		bool operator>(const list<T>&) const;
+		bool operator>=(const list<T>&) const;
+		bool operator<(const list<T>&) const;
+		bool operator<=(const list<T>&) const;
+
+		// FUNCTIONS FOR list CLASS
 
 		// NODE INSERTION / ASSIGNMENT OPERATIONS
 		void push_front(const T);
 		void push_back(const T);
-		void insert(const iterator<T>&, const T);
-		void insert(const iterator<T>&, const size_t, const T);
-		void assign(const iterator<T>&, const T);
-		void assign(const iterator<T>&, const iterator<T>&, const T);
+		void insert(iterator<T>&, const T);
+		void insert(iterator<T>&, const size_t, const T);
+		void assign(iterator<T>&, const T);
+		void assign(iterator<T>&, iterator<T>&, const T);
 		void merge( list<T>&);
 
 		// NODE DELETION / REMOVAL OPERATIONS
 		void pop_front();
 		void pop_back();
-		void splice(const iterator<T>&, list<T>&);
-		void splice(const iterator<T>&, list<T>&, const iterator<T>&);
-		void splice(const iterator<T>&, list<T>&, const iterator<T>&, const iterator<T>&);
-		void erase(const iterator<T>&);
+		void splice( iterator<T>&, list<T>&);
+		void splice( iterator<T>&, list<T>&,  iterator<T>&);
+		void splice( iterator<T>&, list<T>&,  iterator<T>&,  iterator<T>&);
+		void erase( iterator<T>&);
 		void erase(iterator<T>, iterator<T>);
 		void clear();
 
@@ -207,19 +214,11 @@ namespace List {
 		inline constexpr T back() const { return *(iterator<T>(*this).end()); }
 		inline iterator<T> begin() const { return iterator<T>(*this).begin(); }
 		inline iterator<T> end() const { return iterator<T>(*this).end(); }
-
-		void print() const {
-			node<T>* temp = tail_->prev_;
-			while (temp != head_) {
-				cout << temp->data_ << ' ';
-				temp = temp->prev_;
-			}
-			cout << endl;
-		}
 	};
 
 #include "iterator.h"		// DEFINITIONS FOR iterator<T> CLASS
-#include "Definition.h"		// DEFINITIONS FOR list<T> CLASS
+#include "Definition.h"		
+	// DEFINITIONS FOR list<T> CLASS
 }
 
 #endif // !LIST_H
