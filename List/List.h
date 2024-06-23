@@ -133,12 +133,7 @@ namespace List {
 		{
 			head_->next_ = tail_;
 			tail_->prev_ = head_;
-
-			iterator<T> itr = OTHER.begin();
-			while (itr.pointed_ != nullptr) {
-				push_back(*itr);
-				++itr;
-			}
+			*this = OTHER;
 		}
 		list(const size_t SIZE) :									// CONSTRUCTOR WITH SIZE ARGS
 			size_(0),

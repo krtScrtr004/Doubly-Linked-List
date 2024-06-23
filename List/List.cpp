@@ -9,10 +9,22 @@ int main()
 {
 	list<int> myList;
 	iterator<int> itr = myList.begin();
-	for (auto i = 100; i > 0; --i)
+	for (auto i = 5; i > 0; --i)
 		myList.push_back(i);
 
+	list<int> otherList(myList);
+
+	myList.push_back(3123);
+
+	std::string i; 
+	if (otherList < myList)
+		i = "Yes";
+	else
+		i = "no";
+
 	cout << myList << endl;
+	cout << otherList << endl;
+	cout << i << endl;
 
 	return 0;
 }

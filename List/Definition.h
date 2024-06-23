@@ -64,6 +64,112 @@ inline node<T>* List::list<T>::merge(node<T>* n1, node<T>* n2) {
 
 /*-----PUBLIC-----*/
 
+// OVERLOADED OPERATORS FOR list CLASS
+
+// OVERLOADED ASSIGNMENT OPERATOR
+template <typename T>
+list<T>& list<T>::operator=(const list<T>& RHS) {
+    if (*this != RHS) {
+        iterator<T> itr = RHS.begin();
+        while (itr != RHS.tail_) {
+            push_back(*itr);
+            ++itr;
+        }
+    }
+
+    return *this;
+}
+
+// OVERLOADED EQUALITY OPERATOR
+template <typename T>
+bool list<T>::operator==(const list<T>& OTHER) const {
+    if (head_ != OTHER.head_ && tail_ != OTHER.tail_) 
+        return false;
+
+    if (size_ != OTHER.size_) 
+        return false;
+
+    iterator<T> temp(*this), temp1(OTHER);
+    while (temp != tail_) {
+        if (temp != temp1) return false;
+        ++temp;
+        ++temp1;
+    }
+    
+    return true;
+}
+
+// OVERLOADED NOT EQUAL OPERATOR
+template <typename T>
+bool list<T>::operator!=(const list<T>& OTHER) const {
+    if (head_ == OTHER.head_ && tail_ == OTHER.tail_)
+        return false;
+
+    if (size_ == OTHER.size_) 
+        return false;
+
+    iterator<T> temp(*this), temp1(OTHER);
+    while (temp != tail_) {
+        if (temp == temp1) return false;
+        ++temp;
+        ++temp1;
+    }
+
+    return true;
+}
+
+// OVERLOADED GREATER THAN / EQUAL OPERATOR
+template <typename T>
+bool list<T>::operator>(const list<T>& RHS) const {
+    iterator<T> temp(*this), temp1(RHS);
+    while (temp != tail_ && temp1 != temp1.tail_) {
+        if (*temp < *temp1) return false;
+        ++temp;
+        ++temp1;
+    }
+
+    return (size_ > RHS.size_);
+}
+
+// OVERLOADED GREATER THAN / EQUAL OPERATOR
+template <typename T>
+bool list<T>::operator>=(const list<T>& RHS) const {
+    iterator<T> temp(*this), temp1(RHS);
+    while (temp != tail_ && temp1 != temp1.tail_) {
+        if (*temp < *temp1) return false;
+        ++temp;
+        ++temp1;
+    }
+
+    return (size_ >= RHS.size_);
+}
+
+// OVERLOADED LESS THAN OPERATOR
+template <typename T>
+bool list<T>::operator<(const list<T>& RHS) const {
+    iterator<T> temp(*this), temp1(RHS);
+    while (temp != tail_ && temp1 != temp1.tail_) {
+        if (*temp > *temp1) return false;
+        ++temp;
+        ++temp1;
+    }
+
+    return (size_ < RHS.size_);
+}
+
+// OVERLOADED LESS THAN / EQUAL OPERATOR
+template <typename T>
+bool list<T>::operator<=(const list<T>& RHS) const {
+    iterator<T> temp(*this), temp1(RHS);
+    while (temp != tail_ && temp1 != temp1.tail_) {
+        if (*temp > *temp1) return false;
+        ++temp;
+        ++temp1;
+    }
+
+    return (size_ <= RHS.size_);
+}
+
 // NODE INSERTION / ASSIGNMENT OPERATIONS
 
 // PUSH FRONT FUNCTION
@@ -271,6 +377,9 @@ void list<T>::erase(iterator<T> BEGIN, iterator<T> END) {
 // CLEAR FUNCTION
 template <typename T>
 void list<T>::clear() {
+    if (!head_ || !tail_)
+        return;
+
     iterator<T> itr = begin();
     while (size_ != 0 && itr != tail_) {
         node<T>* temp = itr;
