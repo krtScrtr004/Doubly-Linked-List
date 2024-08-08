@@ -12,7 +12,12 @@ int main()
 	for (auto i = 5; i > 0; --i)
 		myList.push_back(i);
 
-	list<int> otherList(myList);
+	for (auto nd : myList)
+		std::cout << nd << std::endl;
+
+	//std::cout << *myList.end() << std::endl;
+
+	/*list<int> otherList(myList);
 
 	myList.push_back(3123);
 
@@ -24,7 +29,7 @@ int main()
 
 	cout << myList << endl;
 	cout << otherList << endl;
-	cout << i << endl;
+	cout << i << endl;*/
 
 	return 0;
 }

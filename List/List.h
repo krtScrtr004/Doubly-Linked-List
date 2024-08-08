@@ -84,7 +84,7 @@ namespace List {
 		operator node<T>*() const { return this->pointed_; }
 		iterator<T> begin() { return *this; }
 		iterator<T> end() {
-			pointed_ = tail_->prev_;
+			pointed_ = tail_;
 			return *this;
 		}
 	};
@@ -192,10 +192,10 @@ namespace List {
 		// NODE DELETION / REMOVAL OPERATIONS
 		void pop_front();
 		void pop_back();
-		void splice( iterator<T>&, list<T>&);
-		void splice( iterator<T>&, list<T>&,  iterator<T>&);
-		void splice( iterator<T>&, list<T>&,  iterator<T>&,  iterator<T>&);
-		void erase( iterator<T>&);
+		void splice(iterator<T>&, list<T>&);
+		void splice(iterator<T>&, list<T>&,  iterator<T>&);
+		void splice(iterator<T>&, list<T>&,  iterator<T>&,  iterator<T>&);
+		void erase(iterator<T>&);
 		void erase(iterator<T>, iterator<T>);
 		void clear();
 
@@ -212,8 +212,7 @@ namespace List {
 	};
 
 #include "iterator.h"		// DEFINITIONS FOR iterator<T> CLASS
-#include "Definition.h"		
-	// DEFINITIONS FOR list<T> CLASS
+#include "Definition.h"		// DEFINITIONS FOR list<T> CLASS
 }
 
 #endif // !LIST_H
