@@ -68,26 +68,114 @@ namespace List {
 			tail_(LIST.tail_) {}
 
 		// OVERLAODED OPERATORS
-		iterator<T>& operator=(const iterator<T>&);
-		bool operator==(const iterator<T>& RHS) const { return (pointed_ == RHS.pointed_); }
-		bool operator!=(const iterator<T>& RHS) const { return (pointed_ != RHS.pointed_); }
-		iterator<T>& operator++();
-		iterator<T>& operator++(int);
-		iterator<T>& operator+(const size_t);
-		iterator<T>& operator+=(const size_t N) { return (*this) + N; }
-		iterator<T>& operator--();
-		iterator<T>& operator--(int);
-		iterator<T>& operator-(const size_t);
-		iterator<T>& operator-=(const size_t N) { return (*this) - N; }
-		node<T>* operator->() { return this->pointed_; }
-		T& operator*() const { return (pointed_ ? pointed_->data_ : defaultValue); }
-		operator node<T>*() const { return this->pointed_; }
-		iterator<T> begin() { return *this; }
+		iterator<T>& operator=(const iterator<T>& RHS) {
+			if (*this != RHS) {
+				pointed_ = RHS.pointed_;
+				head_ = RHS.head_;
+				tail_ = RHS.tail_;
+			}
+
+			return *this;
+		}
+
+		bool operator==(const iterator<T>& RHS) const {
+			return (pointed_ == RHS.pointed_);
+		}
+
+		bool operator!=(const iterator<T>& RHS) const {
+			return (pointed_ != RHS.pointed_);
+		}
+
+		iterator<T>& operator++() {
+			if ((pointed_ == tail_) || (pointed_->next_ == tail_))
+				pointed_ = tail_;
+			else
+				pointed_ = pointed_->next_;
+
+			return *this;
+		}
+
+		iterator<T>& operator++(int) {
+			iterator<T>* itr(this);
+			if ((pointed_ == tail_) || (pointed_->next_ == tail_))
+				pointed_ = tail_;
+			else
+				pointed_ = pointed_->next_;
+
+			return *itr;
+		}
+
+		iterator<T>& operator+(const size_t N) {
+			size_t count = 0;
+			while (count < N && pointed_ != tail_) {
+				++(*this);
+				++count;
+			}
+
+			return *this;
+		}
+
+		iterator<T>& operator+=(const size_t N) { 
+			return (*this) + N; 
+		}
+
+		iterator<T>& operator--() {
+			if ((pointed_ == head_) || (pointed_->prev_ == head_))
+				pointed_ = head_;
+			else
+				pointed_ = pointed_->prev_;
+
+			return *this;
+		}
+
+		iterator<T>& operator--(int) {
+			iterator<T>* itr(this);
+			if ((pointed_ == head_) || (pointed_->prev_ == head_))
+				pointed_ = head_;
+			else
+				pointed_ = pointed_->prev_;
+
+			return *itr;
+		}
+
+		iterator<T>& operator-(const size_t N) {
+			size_t count = 0;
+			while (count < N && pointed_ != head_) {
+				--(*this);
+				++count;
+			}
+
+			return *this;
+		}
+
+		iterator<T>& operator-=(const size_t N) { 
+			return (*this) - N; 
+		}
+
+		node<T>* operator->() { 
+			return this->pointed_; 
+		}
+
+		T& operator*() const { 
+			return (pointed_ ? pointed_->data_ : defaultValue); 
+		}
+
+		operator node<T>*() const { 
+			return this->pointed_; 
+		}
+
+		iterator<T> begin() { 
+			return *this; 
+		}
+
 		iterator<T> end() {
 			pointed_ = tail_;
 			return *this;
 		}
 	};
+
+	template <typename T>
+	T iterator<T>::defaultValue = T();
 
 	/*-----list CLASS-----*/
 	template <typename T>
@@ -211,7 +299,6 @@ namespace List {
 		inline iterator<T> end() const { return iterator<T>(*this).end(); }
 	};
 
-#include "iterator.h"		// DEFINITIONS FOR iterator<T> CLASS
 #include "Definition.h"		// DEFINITIONS FOR list<T> CLASS
 }
 
