@@ -12,6 +12,8 @@ int main()
 	for (auto i = 5; i > 0; --i)
 		myList.push_back(i);
 
+	myList.insert(myList.begin() + 1, 123);
+
 	for (auto nd : myList)
 		std::cout << nd << std::endl;
 

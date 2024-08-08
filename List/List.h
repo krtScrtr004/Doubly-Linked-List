@@ -12,7 +12,7 @@ using std::size_t;
 using std::ostream;
 
 namespace List {
-	// FORWARD DECLARATION OF CLASSES
+	// FORWARD DECLARATION
 	template <typename T> class list;
 	template <typename T> class node;
 	template <typename T> class iterator;
@@ -48,7 +48,7 @@ namespace List {
 		friend ostream& operator<<(ostream& os, const list<T>&);
 
 	private:
-		static T defaultValue;							// STATIC MEMBER TO CALL 'T' TYPE DEFAULT CONSTRUCTOR
+		static T defaultValue;							// DEFAULT VALUE FOR T
 		node<T> *pointed_, *head_, *tail_;
 
 	private:
@@ -67,7 +67,9 @@ namespace List {
 			head_(LIST.head_),
 			tail_(LIST.tail_) {}
 
-		// OVERLAODED OPERATORS
+		// OVERLOADED OPERATORS
+
+		// EQUALS OPERATOR
 		iterator<T>& operator=(const iterator<T>& RHS) {
 			if (*this != RHS) {
 				pointed_ = RHS.pointed_;
@@ -78,14 +80,17 @@ namespace List {
 			return *this;
 		}
 
+		// EUQALITY OPERATOR
 		bool operator==(const iterator<T>& RHS) const {
 			return (pointed_ == RHS.pointed_);
 		}
 
+		// NON-EQUALITY OPERATOR
 		bool operator!=(const iterator<T>& RHS) const {
 			return (pointed_ != RHS.pointed_);
 		}
 
+		// PRE-INCREMENT OPERATOR
 		iterator<T>& operator++() {
 			if ((pointed_ == tail_) || (pointed_->next_ == tail_))
 				pointed_ = tail_;
@@ -95,6 +100,7 @@ namespace List {
 			return *this;
 		}
 
+		// POST-INCREMENT OPERATOR
 		iterator<T>& operator++(int) {
 			iterator<T>* itr(this);
 			if ((pointed_ == tail_) || (pointed_->next_ == tail_))
@@ -105,6 +111,7 @@ namespace List {
 			return *itr;
 		}
 
+		// ADDITION OPERATOR
 		iterator<T>& operator+(const size_t N) {
 			size_t count = 0;
 			while (count < N && pointed_ != tail_) {
@@ -115,10 +122,12 @@ namespace List {
 			return *this;
 		}
 
+		// ADDITION ASSIGNMENT OPERATOR
 		iterator<T>& operator+=(const size_t N) { 
 			return (*this) + N; 
 		}
 
+		// PRE-DECREMENT OPERATOR
 		iterator<T>& operator--() {
 			if ((pointed_ == head_) || (pointed_->prev_ == head_))
 				pointed_ = head_;
@@ -128,6 +137,7 @@ namespace List {
 			return *this;
 		}
 
+		// POST-DECREMENT OPERATOR
 		iterator<T>& operator--(int) {
 			iterator<T>* itr(this);
 			if ((pointed_ == head_) || (pointed_->prev_ == head_))
@@ -138,6 +148,7 @@ namespace List {
 			return *itr;
 		}
 
+		// SUBTRACTION OPERATOR
 		iterator<T>& operator-(const size_t N) {
 			size_t count = 0;
 			while (count < N && pointed_ != head_) {
@@ -148,32 +159,39 @@ namespace List {
 			return *this;
 		}
 
+		// SUCTRACTION ASSIGNMENT OPERATOR
 		iterator<T>& operator-=(const size_t N) { 
 			return (*this) - N; 
 		}
 
+		// ARROW OPERATOR
 		node<T>* operator->() { 
 			return this->pointed_; 
 		}
 
+		// DEREFENCE OPERATOR
 		T& operator*() const { 
 			return (pointed_ ? pointed_->data_ : defaultValue); 
 		}
 
+		// TYPE CONVERSION OPERATOR (to node<T>*)
 		operator node<T>*() const { 
 			return this->pointed_; 
 		}
 
+		// BEGIN ITERATOR
 		iterator<T> begin() { 
 			return *this; 
 		}
 
+		// END ITERATOR (One node past last element)
 		iterator<T> end() {
 			pointed_ = tail_;
 			return *this;
 		}
 	};
 
+	// CALL 'T' TYPE DEFAULT CONSTRUCTOR
 	template <typename T>
 	T iterator<T>::defaultValue = T();
 
@@ -201,9 +219,58 @@ namespace List {
 		size_t size_;
 
 	private:
-		node<T>* sort(node<T>*);
-		node<T>* split(node<T>*);
-		node<T>* merge(node<T>*, node<T>*);
+		// SORT FUNCTION
+		node<T>* sort(node<T>* first) {
+			if (first == tail_ || first->next_ == tail_)
+				return first;
+
+			node<T>* second = split(first);
+			first = sort(first);
+			second = sort(second);
+
+			return merge(first, second);
+		}
+
+		// SPLIT FUNCTION (UTILITY FOR SORT FUNCION)
+		node<T>* split(node<T>* head) {
+			if (head == tail_ || head->next_ == tail_)
+				return nullptr;
+
+			node<T>* slow = head;
+			node<T>* fast = head;
+
+			while (fast != nullptr && fast->next_ != nullptr &&
+				fast != tail_ && fast->next_ != tail_) {
+				slow = slow->next_;
+				fast = fast->next_->next_;
+			}
+
+			// ADJUST BOUNDS OF SPLIT LIST
+			node<T>* second = slow;
+			slow->prev_->next_ = tail_;
+			second->prev_ = head_;
+
+			return second;
+		}
+
+		// MERGE FUNCTION (UTILITY FOR SORT FUNCTION)
+		node<T>* merge(node<T>* n1, node<T>* n2) {
+			if (n1 == nullptr || n1 == head_ || n1 == tail_) return n2;
+			if (n2 == nullptr || n2 == head_ || n2 == tail_) return n1;
+
+			if (n1->data_ <= n2->data_) {
+				n1->next_ = merge(n1->next_, n2);
+				n1->next_->prev_ = n1;
+				return n1;
+			}
+			else {
+				n2->next_ = merge(n1, n2->next_);
+				n2->next_->prev_ = n2;
+				return n2;
+			}
+
+			return nullptr;
+		}
 
 	public:
 		list() :													// DEFAULT CONSTRUCTOR
@@ -258,48 +325,375 @@ namespace List {
 		}
 
 		// OVERLOADED OPERATORS FOR list CLASS
-		list<T>& operator=(const list<T>&);
-		bool operator==(const list<T>&) const;
-		bool operator!=(const list<T>&) const;
-		bool operator>(const list<T>&) const;
-		bool operator>=(const list<T>&) const;
-		bool operator<(const list<T>&) const;
-		bool operator<=(const list<T>&) const;
+
+		// EQUALS OPERATOR
+		list<T>& operator=(const list<T>& RHS) {
+			if (*this != RHS) {
+				iterator<T> itr = RHS.begin();
+				while (itr != RHS.tail_) {
+					push_back(*itr);
+					++itr;
+				}
+			}
+
+			return *this;
+		}
+
+		// EQUALITY OPERATOR
+		bool operator==(const list<T>& OTHER) const {
+			if (head_ != OTHER.head_ && tail_ != OTHER.tail_)
+				return false;
+
+			if (size_ != OTHER.size_)
+				return false;
+
+			iterator<T> temp(*this), temp1(OTHER);
+			while (temp != tail_) {
+				if (temp != temp1) return false;
+				++temp;
+				++temp1;
+			}
+
+			return true;
+		}
+
+		// NON EQUALITY OPERATOR
+		bool operator!=(const list<T>& OTHER) const {
+			if (head_ == OTHER.head_ && tail_ == OTHER.tail_)
+				return false;
+
+			if (size_ == OTHER.size_)
+				return false;
+
+			iterator<T> temp(*this), temp1(OTHER);
+			while (temp != tail_) {
+				if (temp == temp1) return false;
+				++temp;
+				++temp1;
+			}
+
+			return true;
+		}
+
+		// GREATER THAN OPERATOR
+		bool operator>(const list<T>& RHS) const {
+			iterator<T> temp(*this), temp1(RHS);
+			while (temp != tail_ && temp1 != temp1.tail_) {
+				if (*temp < *temp1) return false;
+				++temp;
+				++temp1;
+			}
+
+			return (size_ > RHS.size_);
+		}
+
+		// GREATER THAN OR EQUAL TO OPERATOR
+		bool operator>=(const list<T>& RHS) const {
+			iterator<T> temp(*this), temp1(RHS);
+			while (temp != tail_ && temp1 != temp1.tail_) {
+				if (*temp < *temp1) return false;
+				++temp;
+				++temp1;
+			}
+
+			return (size_ >= RHS.size_);
+		}
+
+		// LESS THAN OPERATOR
+		bool operator<(const list<T>& RHS) const {
+			iterator<T> temp(*this), temp1(RHS);
+			while (temp != tail_ && temp1 != temp1.tail_) {
+				if (*temp > *temp1) return false;
+				++temp;
+				++temp1;
+			}
+
+			return (size_ < RHS.size_);
+		} 
+
+		// LESS THAN OR EQUAL TO OPERATOR
+		bool operator<=(const list<T>& RHS) const {
+			iterator<T> temp(*this), temp1(RHS);
+			while (temp != tail_ && temp1 != temp1.tail_) {
+				if (*temp > *temp1) return false;
+				++temp;
+				++temp1;
+			}
+
+			return (size_ <= RHS.size_);
+		}
 
 		// FUNCTIONS FOR list CLASS
 
 		// NODE INSERTION / ASSIGNMENT OPERATIONS
-		void push_front(const T);
-		void push_back(const T);
-		void insert(iterator<T>&, const T);
-		void insert(iterator<T>&, const size_t, const T);
-		void assign(iterator<T>&, const T);
-		void assign(iterator<T>&, iterator<T>&, const T);
-		void merge( list<T>&);
+
+		// PUSH FRONT FUNCTION
+		void push_front(const T DATA) {
+			iterator<T> itr = begin();
+			insert(itr, DATA);
+		}
+
+		// PUSH BACK FUNCTION
+		void push_back(const T DATA) {
+			iterator<T> itr = end();
+			insert(itr++, DATA);
+		}
+
+		// INSERT FUNCTION
+		void insert(iterator<T>& ITR, const T DATA) {
+			node<T>* newNode = new node<T>();
+			newNode->data_ = DATA;
+			newNode->prev_ = ITR->prev_;
+			newNode->next_ = ITR;
+			ITR->prev_->next_ = newNode;
+			ITR->prev_ = newNode;
+			++size_;
+		}
+
+		// RANGE INSERT FUNCTION
+		void insert(iterator<T>& ITR, const size_t N, const T DATA) {
+			size_t count = 0;
+			while (count < N && (ITR != head_ || ITR == tail_)) {
+				insert(ITR, DATA);
+				++count;
+			}
+		}
+
+		// ASSIGN FUNCTION
+		void assign(iterator<T>& ITR, const T DATA) {
+			if (ITR == head_ || ITR == tail_) {
+				cerr << "Cannot assign new value at invalid position" << endl;
+				return;
+			}
+
+			ITR->data_ = DATA;
+		}
+
+		// RANGE ASSIGN FUNCTION
+		void assign(iterator<T>& BEGIN, iterator<T>& END, const T DATA) {
+			iterator<T> temp = BEGIN;
+			while (temp != END->next_ && temp != tail_) {
+				temp->data_ = DATA;
+				++temp;
+			}
+		}
+
+		// MERGE LISTS FUNCTION
+		void merge(list<T>& other) {
+			// LINK other TO tail_'s PREV
+			tail_->prev_->next_ = other.head_->next_;
+			other.head_->next_->prev_ = tail_->prev_;
+			tail_->prev_ = other.tail_->prev_;
+			tail_->prev_->next_ = tail_;
+
+			other.head_->next_ = other.tail_;
+			other.tail_->prev_ = other.head_;
+
+			size_ += other.size_;
+			other.size_ = 0;
+
+			sort();
+		}
 
 		// NODE DELETION / REMOVAL OPERATIONS
-		void pop_front();
-		void pop_back();
-		void splice(iterator<T>&, list<T>&);
-		void splice(iterator<T>&, list<T>&,  iterator<T>&);
-		void splice(iterator<T>&, list<T>&,  iterator<T>&,  iterator<T>&);
-		void erase(iterator<T>&);
-		void erase(iterator<T>, iterator<T>);
-		void clear();
+		
+		// POP FRONT FUNCTION
+		void pop_front() {
+			iterator<T> itr = begin();
+			erase(itr);
+		}
+
+
+		// POP BACK FUNCTION
+		void pop_back() {
+			iterator<T> itr = end();
+			erase(itr);
+		}
+
+		// WHOLE LIST SPLICE FUNCTION 
+		void splice(iterator<T>& ITR, list<T>& other) {
+			if (ITR == head_ || ITR == tail_) {
+				cerr << "Cannot splice data to an invalid position" << endl;
+				return;
+			}
+
+			size_ += other.size_;
+
+			// LINK other NEXT TO SPECIFIED ITERATOR
+			ITR->prev_->next_ = other.head_->next_;
+			ITR->prev_->next_->prev_ = ITR->prev_;
+			ITR->prev_ = other.tail_->prev_;
+			ITR->prev_->next_ = ITR;
+
+			other.head_->next_ = other.tail_;
+			other.tail_->prev_ = other.head_;
+			other.size_ = 0;
+		}
+
+		// SINGLE ENDED SPLICE FUNCTION
+		void splice(iterator<T>& POS, list<T>& other, iterator<T>& BEGIN) {
+			if (POS == head_ || POS == tail_) {
+				cerr << "Cannot splice data to an invalid position" << endl;
+				return;
+			}
+
+			if (BEGIN == head_ || BEGIN == tail_) {
+				cerr << "Cannot splice data from an invalid position" << endl;
+				return;
+			}
+
+			node<T>* temp = BEGIN->prev_;
+			size_t addedSize = other.size_;
+
+			// UPDATE this' & other's size_
+			for (node<T>* temp = BEGIN; temp != other.tail_; ) {
+				--other.size_;
+				++size_;
+				temp = temp->next_;
+			}
+
+			// LINK other's SPECIFIED BEGIN TO SPECIFIED POSITION
+			POS->prev_->next_ = BEGIN;
+			POS->prev_->next_->prev_ = POS->prev_;
+			POS->prev_ = other.tail_->prev_;
+			POS->prev_->next_ = POS;
+
+			temp->next_ = other.tail_;
+			other.tail_->prev_ = temp;
+		}
+
+		// DOUBLE ENDED RANGE SPLICE FUNCTION
+		void splice(iterator<T>& POS, list<T>& other, iterator<T>& BEGIN, iterator<T>& END) {
+			if (POS == head_ || POS == tail_) {
+				cerr << "Cannot splice data to an invalid position" << endl;
+				return;
+			}
+
+			if ((BEGIN == head_ || BEGIN == tail_) ||
+				(END == head_ || END == tail_)) {
+				cerr << "Cannot splice data from an invalid position" << endl;
+				return;
+			}
+
+			node<T>* tempBack = BEGIN->prev_,
+				* tempNext = END->next_;
+
+			// UPDATE this' & other's size_
+			for (node<T>* temp = BEGIN; temp != tempNext; ) {
+				--other.size_;
+				++size_;
+				temp = temp->next_;
+			}
+
+			POS->prev_->next_ = BEGIN;
+			POS->prev_->next_->prev_ = POS->prev_;
+			POS->prev_ = END;
+			END->next_ = POS;
+
+
+			// UPDATE BORDERED NODES FROM other
+			tempBack->next_ = tempNext;
+			tempNext->prev_ = tempBack;
+		}
+
+		// SINGLE ERASE FUNCTION
+		void erase(iterator<T>& ITR) {
+			if (ITR == head_ || ITR == tail_) {
+				cerr << "Cannot erase at invalid position" << endl;
+				return;
+			}
+
+			ITR->prev_->next_ = ITR->next_;
+			ITR->next_->prev_ = ITR->prev_;
+			delete ITR;
+			--size_;
+		}
+
+		// RANGE ERASE FUNCTION
+		void erase(iterator<T> BEGIN, iterator<T> END) {
+			++END;
+			while (BEGIN != END && BEGIN != tail_) {
+				iterator<T> temp = BEGIN;
+				++BEGIN;
+				erase(temp);
+			}
+		}
+
+		// CLEAR FUNCTION
+		void clear() {
+			if (!head_ || !tail_)
+				return;
+
+			iterator<T> itr = begin();
+			while (size_ != 0 && itr != tail_) {
+				node<T>* temp = itr;
+				++itr;
+				delete temp;
+				--size_;
+			}
+
+			head_->next_ = tail_;
+			tail_->prev_ = head_;
+		}
 
 		// NODE ARRAGEMENT OPERATIONS
-		void reverse();
-		void sort();
+		
+		// REVERSE FUNCTION
+		void reverse() {
+			node<T>* current = head_;
+			node<T>* temp = nullptr;
+
+			while (current != nullptr) {
+				temp = current->prev_;
+				current->prev_ = current->next_;
+				current->next_ = temp;
+
+				current = current->prev_;
+			}
+
+			if (temp != nullptr) {
+				temp = temp->prev_;
+				tail_ = head_;
+				head_ = temp;
+			}
+		}
+
+		// SORT FUNCTION
+		void sort() {
+			head_->next_ = sort(head_);
+
+			node<T>* temp = head_->next_;
+			while (temp->next_ != tail_)
+				temp = temp->next_;
+
+			temp->next_->prev_ = temp;
+		}
 
 		// UTILITY / HELPER FUNCTIONS
-		inline constexpr size_t size() const { return size_; }
-		inline constexpr T front() const { return *(iterator<T>(*this).begin()); }
-		inline constexpr T back() const { return *(iterator<T>(*this).end()); }
-		inline iterator<T> begin() const { return iterator<T>(*this).begin(); }
-		inline iterator<T> end() const { return iterator<T>(*this).end(); }
-	};
+		inline constexpr size_t size() const { 
+			return size_; 
+		}
 
-#include "Definition.h"		// DEFINITIONS FOR list<T> CLASS
+		// FRONT FUNCTION
+		inline constexpr T front() const { 
+			return *(iterator<T>(*this).begin()); 
+		}
+
+		// BACK FUNCTION
+		inline constexpr T back() const { 
+			return *(iterator<T>(*this).end()); 
+		}
+
+		// BEGIN FUNCTION
+		inline iterator<T> begin() const { 
+			return iterator<T>(*this).begin(); 
+		}
+
+		// END FUNCTION
+		inline iterator<T> end() const { 
+			return iterator<T>(*this).end(); 
+		}
+	};
 }
 
 #endif // !LIST_H
